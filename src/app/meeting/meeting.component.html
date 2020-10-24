@@ -1,0 +1,59 @@
+<main>
+  <section>
+    <div class="container py-4">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="text-center h1">
+                  <b>MEETINGS</b>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-5 py-5 bg-light">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="card-body">
+                <h2 class="card-title text-center">Please Enter Meeting Details</h2>
+                <div class="row justify-content-center">
+                  <div class="col-md-6">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="meeting_id">MEETING ID</label>
+                        <input type="text" class="form-control" id="meeting_id" formControlName="meeting_id" pattern="^[0-9]*$">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="meeting_pswd">MEETING PASSWORD</label>
+                        <input type="password" class="form-control" id="meeting_pswd" formControlName="meeting_pswd">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="username">NAME</label>
+                        <input type="text" class="form-control" id="username" formControlName="username">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="user_email">EMAIL</label>
+                        <input type="email" class="form-control" id="user_email" formControlName="user_email">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="role">JOIN MEETING AS</label>
+                      <select class="form-control" id="role" name="role" formControlName="role" (change)="checkRole($event)">
+                        <option value="0">ATTENDEE</option>
+                        <option value="1">HOST</option>
+                        <option value="5">CO-HOST</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row justify-content-center">
+                  <button type="submit" [disabled]="!form.valid" class="btn btn-outline-primary">{{joinRole !== '' ? joinRole : 'JOIN MEETING'}}</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
