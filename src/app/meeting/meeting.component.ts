@@ -6,7 +6,7 @@ import { ZoomMtg } from '@zoomus/websdk';
 import { MeetingService } from '../core/services/meeting.service';
 
 // ZoomMtg.setZoomJSLib('http://localhost:4200/node_modules/@zoomus/websdk/dist/lib', '/av'); // Local version
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av') // CDN version
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
 // if (!china) {
 //     ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
 //   } else {
