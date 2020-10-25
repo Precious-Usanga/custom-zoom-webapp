@@ -5,7 +5,13 @@ import { DOCUMENT } from '@angular/common';
 import { ZoomMtg } from '@zoomus/websdk';
 import { MeetingService } from '../core/services/meeting.service';
 
-ZoomMtg.setZoomJSLib('http://localhost:4200/node_modules/@zoomus/websdk/dist/lib', '/av');
+// ZoomMtg.setZoomJSLib('http://localhost:4200/node_modules/@zoomus/websdk/dist/lib', '/av'); // Local version
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av') // CDN version
+// if (!china) {
+//     ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
+//   } else {
+//     ZoomMtg.setZoomJSLib('https://jssdk.zoomus.cn/1.8.1/lib', '/av');
+//   }
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
