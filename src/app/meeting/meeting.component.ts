@@ -1,17 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { ZoomMtg } from '@zoomus/websdk';
 import { MeetingService } from '../core/services/meeting.service';
 
-// ZoomMtg.setZoomJSLib('http://localhost:4200/node_modules/@zoomus/websdk/dist/lib', '/av'); // Local version
 ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
-// if (!china) {
-//     ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
-//   } else {
-//     ZoomMtg.setZoomJSLib('https://jssdk.zoomus.cn/1.8.1/lib', '/av');
-//   }
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
@@ -42,6 +36,7 @@ export class MeetingComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
   }
+
   initForm(): void {
     this.form = this.fb.group({
       meeting_id: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]*$')])],
@@ -56,13 +51,12 @@ export class MeetingComponent implements OnInit {
     return this.form.controls;
   }
 
-  onSubmit() {
-
-    this.payload.meeting_id = Number(this.formData.meeting_id.value),
-    this.payload.meeting_pswd = this.formData.meeting_pswd.value,
-    this.payload.user_email = this.formData.user_email.value,
-    this.payload.username = this.formData.username.value,
-    this.payload.role = Number(this.formData.role.value),
+  onSubmit(formPayload) {
+    this.payload.meeting_id = Number(formPayload.meeting_id.value),
+    this.payload.meeting_pswd = formPayload.meeting_pswd.value,
+    this.payload.user_email = formPayload.user_email.value,
+    this.payload.username = formPayload.username.value,
+    this.payload.role = Number(formPayload.role.value),
 
     console.log(this.payload);
     this.getUserSignature({meetingNumber: this.payload.meeting_id, role: this.payload.role});
@@ -122,5 +116,9 @@ export class MeetingComponent implements OnInit {
     } else if (Number(event.target.value) === 5 || Number(event.target.value) === 0) {
       this.joinRole = 'JOIN MEETING';
     }
+  }
+
+  clearFormFields() {
+    this.form.reset();
   }
 }

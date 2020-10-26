@@ -2,6 +2,57 @@
 
 html, body {
   min-width: 0 !important;
+  overflow-y: auto !important;
+}
+
+label {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.card-title {
+  font-size: 16px !important;
+}
+
+.card {
+  border-radius: 15px;
+  border-color: transparent !important;
+  box-shadow: 0px 0px 10px 10px rgba(124, 123, 123, 0.1);
+}
+
+.bg-white {
+  background-color: #e3e8fe;
+}
+
+.bg {
+  background-image: url('../src/assets/images/bg-5.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 65vh;
+}
+.btn-outline-red:hover {
+  color: #fff !important;
+  background: linear-gradient(145deg, #c6303e, #eb394a);
+}
+
+.btn-outline-red {
+  color: #dc3545 !important;
+  border: 1px solid transparent !important;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow:  14px 14px 44px #f0f0f0, -14px -14px 44px #ffffff;
+}
+
+.btn-outline-indigo:hover {
+  color: #fff !important;
+  background: linear-gradient(315deg, #2f4cbe, #385ae2);
+}
+
+.btn-outline-indigo {
+  color: #3454d3 !important;
+  border: 1px solid transparent !important;
+  background: linear-gradient(145deg, #bfc3d5, #e3e8fe);
+  box-shadow:  5px 5px 10px #6c6e79, -5px -5px 10px #ffffff;
+  border-radius: 11px;
 }
 
 #zmmtg-root {

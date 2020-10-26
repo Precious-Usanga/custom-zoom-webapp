@@ -1,56 +1,92 @@
-<main>
+<main class="bg">
   <section>
     <div class="container py-4">
       <div class="row">
           <div class="col-md-12">
-              <div class="text-center h1">
+              <div class="text-white text-md-left text-center h3">
                   <b>MEETINGS</b>
               </div>
           </div>
       </div>
       <div class="row">
         <div class="col-12">
-          <div class="card my-5 py-5 bg-light">
-            <form [formGroup]="form" (ngSubmit)="onSubmit()">
-              <div class="card-body">
-                <h2 class="card-title text-center">Please Enter Meeting Details</h2>
-                <div class="row justify-content-center">
-                  <div class="col-md-6">
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="meeting_id">MEETING ID</label>
-                        <input type="text" class="form-control" id="meeting_id" formControlName="meeting_id" pattern="^[0-9]*$">
+          <div class="row justify-content-center">
+            <div class="card my-4 py-2 bg-white">
+              <form [formGroup]="form" (ngSubmit)="onSubmit(formData)">
+                <div class="card-body">
+                  <div class="card-title text-center py-2">Hello! Please Enter Meeting Details</div>
+                  <div class="row justify-content-center">
+                    <div class="py-2 col-md-12">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="meeting_id">MEETING ID</label>
+                          <input type="text" [ngClass]="{'form-control' : true,
+                                                          'is-invalid' : (formData.meeting_id.dirty || formData.meeting_id.touched) && formData.meeting_id.invalid,
+                                                          'is-valid' : (formData.meeting_id.dirty || formData.meeting_id.touched) && formData.meeting_id.valid
+                                                        }" id="meeting_id" formControlName="meeting_id" pattern="^[0-9]*$">
+                          <ng-container *ngIf="(formData.meeting_id.dirty || formData.meeting_id.touched) && formData.meeting_id.invalid">
+                            <div *ngIf="formData.meeting_id.errors.pattern" class="invalid-feedback">Only Numbers accepted as Meeting ID</div>
+                            <div *ngIf="formData.meeting_id.errors.required" class="invalid-feedback">Please Enter Meeting ID'</div>
+                          </ng-container>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                          <label for="meeting_pswd">MEETING PASSWORD</label>
+                          <input type="password" [ngClass]="{'form-control' : true,
+                                                              'is-invalid' : (formData.meeting_pswd.dirty || formData.meeting_pswd.touched) && formData.meeting_pswd.invalid,
+                                                              'is-valid' : (formData.meeting_pswd.dirty || formData.meeting_pswd.touched) && formData.meeting_pswd.valid
+                                                            }" id="meeting_pswd" formControlName="meeting_pswd">
+                          <ng-container *ngIf="(formData.meeting_pswd.dirty || formData.meeting_pswd.touched) && formData.meeting_pswd.invalid">
+                            <div *ngIf="formData.meeting_pswd.errors.required" class="invalid-feedback">Please Enter Meeting Pasword</div>
+                          </ng-container>
+                        </div>
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="meeting_pswd">MEETING PASSWORD</label>
-                        <input type="password" class="form-control" id="meeting_pswd" formControlName="meeting_pswd">
+                      <div class="form-row">
+                        <div class="form-group col-lg-12">
+                          <label for="username">NAME</label>
+                          <input type="text" [ngClass]="{'form-control' : true,
+                                                          'is-invalid' : (formData.username.dirty || formData.username.touched) && formData.username.invalid,
+                                                          'is-valid' : (formData.username.dirty || formData.username.touched) && formData.username.valid
+                                                        }" id="username" formControlName="username">
+                            <ng-container *ngIf="(formData.username.dirty || formData.username.touched) && formData.username.invalid">
+                              <div *ngIf="formData.username.errors.required" class="invalid-feedback">Please Enter Your Name</div>
+                            </ng-container>
+                          </div>
+                        <div class="form-group col-lg-12">
+                          <label for="user_email">EMAIL</label>
+                          <input type="email" [ngClass]="{'form-control' : true,
+                                                          'is-invalid' : formData.user_email.dirty &&  formData.user_email.invalid,
+                                                          'is-valid' : formData.user_email.dirty && formData.user_email.valid
+                                                          }" id="user_email" formControlName="user_email">
+                          <ng-container *ngIf="formData.user_email.dirty && formData.user_email.invalid && formData.user_email.errors.email">
+                            <div class="invalid-feedback">Please Enter Valid Email</div>
+                          </ng-container>
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="username">NAME</label>
-                        <input type="text" class="form-control" id="username" formControlName="username">
+                      <div class="form-group">
+                        <label for="role">JOIN MEETING AS</label>
+                        <select [ngClass]="{'form-control' : true,
+                                              'is-invalid' : (formData.role.dirty || formData.role.touched) && formData.role.invalid,
+                                              'is-valid' : (formData.role.dirty || formData.role.touched) && formData.role.valid
+                                            }" id="role" name="role" formControlName="role" (change)="checkRole($event)">
+                          <option value="">Select Role</option>
+                          <option value="0">ATTENDEE</option>
+                          <option value="1">HOST</option>
+                          <option value="5">CO-HOST</option>
+                        </select>
+                        <ng-container *ngIf="(formData.role.dirty || formData.role.touched) && formData.role.invalid">
+                          <div *ngIf="formData.role.errors.required" class="invalid-feedback">Please Select Meeting Role</div>
+                        </ng-container>
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="user_email">EMAIL</label>
-                        <input type="email" class="form-control" id="user_email" formControlName="user_email">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="role">JOIN MEETING AS</label>
-                      <select class="form-control" id="role" name="role" formControlName="role" (change)="checkRole($event)">
-                        <option value="0">ATTENDEE</option>
-                        <option value="1">HOST</option>
-                        <option value="5">CO-HOST</option>
-                      </select>
                     </div>
                   </div>
+                  <div class="row justify-content-center">
+                    <span><button type="button" class="btn btn-outline-red mx-1" (click)="clearFormFields()">CLEAR</button></span>
+                    <span><button type="submit" [disabled]="!form.valid" class="btn btn-outline-indigo mx-1">{{joinRole !== '' ? joinRole : 'JOIN MEETING'}}</button></span>
+                  </div>
                 </div>
-                <div class="row justify-content-center">
-                  <button type="submit" [disabled]="!form.valid" class="btn btn-outline-primary">{{joinRole !== '' ? joinRole : 'JOIN MEETING'}}</button>
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
