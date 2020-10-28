@@ -56,13 +56,12 @@ export class MeetingComponent implements OnInit {
 
   // method when form is submitted
   onSubmit(formPayload) {
-    this.payload.meeting_id = Number(formPayload.meeting_id.value),
-    this.payload.meeting_pswd = formPayload.meeting_pswd.value,
-    this.payload.user_email = formPayload.user_email.value,
-    this.payload.username = formPayload.username.value,
-    this.payload.role = Number(formPayload.role.value),
+    this.payload.meeting_id = Number(formPayload.meeting_id.value);
+    this.payload.meeting_pswd = formPayload.meeting_pswd.value;
+    this.payload.user_email = formPayload.user_email.value;
+    this.payload.username = formPayload.username.value;
+    this.payload.role = Number(formPayload.role.value);
 
-    // console.log(this.payload);
     // generate signature to start or join meeting
     // it requires meeting_id and role of user
     this.getUserSignature({meetingNumber: this.payload.meeting_id, role: this.payload.role});

@@ -42,16 +42,28 @@ label {
   box-shadow:  14px 14px 44px #f0f0f0, -14px -14px 44px #ffffff;
 }
 
+.form-control:focus {
+  border-color: #E7D29B;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(233, 229, 102, 0.6);
+}
+
+.btn.focus, .btn:focus, .btn:active:focus, .btn.active:focus {
+  outline: 0;
+  outline-offset: -2px;
+  box-shadow: 0 0 0 0.2rem rgba(225, 216, 93, 0.385);
+}
+
 .btn-outline-indigo:hover {
   color: #fff !important;
   background: linear-gradient(315deg, #2f4cbe, #385ae2);
 }
 
 .btn-outline-indigo {
-  color: #3454d3 !important;
+  color: #fff !important;
   border: 1px solid transparent !important;
-  background: linear-gradient(145deg, #bfc3d5, #e3e8fe);
-  box-shadow:  5px 5px 10px #6c6e79, -5px -5px 10px #ffffff;
+  background: linear-gradient(145deg, #E7D29B, #d8be7b);
+  box-shadow:  5px 5px 10px #E7D29B, -5px -5px 10px #ffffff;
   border-radius: 11px;
 }
 
