@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -15,27 +15,7 @@ export class MeetingService {
                           leaveUrl: environment.leaveUrl
                         };
 
-  constructor(
-    private http: HttpClient
-  ) { }
-
-  // getSignature() {
-  //   this.httpClient.post(this.signatureEndpoint, {
-	//     meetingNumber: this.meetingNumber,
-	//     role: this.role
-  //   }).toPromise().then((data: any) => {
-  //     if (data.signature) {
-  //       console.log(data.signature);
-  //       this.startMeeting(data.signature);
-  //     } else {
-  //       console.log(data);
-  //     }
-  //   }).catch((error) => {
-  //     console.log(error);
-  //   });
-  // }
-
-
+  constructor(private http: HttpClient) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

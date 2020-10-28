@@ -16,8 +16,10 @@ ZoomMtg.prepareJssdk();
 })
 export class MeetingComponent implements OnInit {
 
-  form: FormGroup;
+  form: FormGroup; // Reative Form name
   joinRole = '';
+
+  // interface for form
   payload = {
     meeting_id: 0,
     meeting_pswd: '',
@@ -34,9 +36,10 @@ export class MeetingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
+    this.initForm(); // initialize reactive form on component init
   }
 
+  // build form controls
   initForm(): void {
     this.form = this.fb.group({
       meeting_id: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]*$')])],
@@ -51,6 +54,7 @@ export class MeetingComponent implements OnInit {
     return this.form.controls;
   }
 
+  // method when form is submitted
   onSubmit(formPayload) {
     this.payload.meeting_id = Number(formPayload.meeting_id.value),
     this.payload.meeting_pswd = formPayload.meeting_pswd.value,
@@ -58,16 +62,19 @@ export class MeetingComponent implements OnInit {
     this.payload.username = formPayload.username.value,
     this.payload.role = Number(formPayload.role.value),
 
-    console.log(this.payload);
+    // console.log(this.payload);
+    // generate signature to start or join meeting
+    // it requires meeting_id and role of user
     this.getUserSignature({meetingNumber: this.payload.meeting_id, role: this.payload.role});
   }
 
+  // method to generate signature for meeting
   getUserSignature(payload){
     this.meeting.getSignature(payload).subscribe(
       data => {
         if (data.signature) {
-          console.log(data);
-          console.log(this.payload);
+          // console.log(data);
+          // console.log(this.payload);
           this.startMeeting(data, this.payload);
         }
       },
@@ -77,6 +84,7 @@ export class MeetingComponent implements OnInit {
     );
   }
 
+  // method to generate start or join meeting
   startMeeting(meetingPayload, UserPayload) {
 
     document.getElementById('zmmtg-root').style.display = 'block';
@@ -95,22 +103,22 @@ export class MeetingComponent implements OnInit {
           userEmail: UserPayload.user_email,
           passWord: UserPayload.meeting_pswd,
           success: (success) => {
-            console.log(success);
-          },
+                                  console.log(success);
+                                },
           error: (error) => {
-            console.log(error);
-          }
+                              console.log(error);
+                            }
         });
 
       },
       error: (error) => {
-        console.log(error);
-      }
+                          console.log(error);
+                        }
     });
   }
 
+  // toggle between start or join meeting based on role
   checkRole(event) {
-    console.log(event.target.value);
     if (Number(event.target.value) === 1){
       this.joinRole = 'START MEETING';
     } else if (Number(event.target.value) === 5 || Number(event.target.value) === 0) {
@@ -118,6 +126,7 @@ export class MeetingComponent implements OnInit {
     }
   }
 
+  //  reset form
   clearFormFields() {
     this.form.reset();
   }
