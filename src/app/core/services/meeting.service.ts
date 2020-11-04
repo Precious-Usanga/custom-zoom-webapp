@@ -26,7 +26,7 @@ export class MeetingService {
     return throwError ('Something Bad Just happened right now');
   }
 
-  getSignature(payload: {meetingNumber: number, role: string}): Observable<any> {
+  getSignature(payload: {meetingNumber: number, role: number}): Observable<any> {
     const url = `${this.signatureEndpoint}`;
     return this.http.post<any>(url, payload).pipe(
       map(response => {

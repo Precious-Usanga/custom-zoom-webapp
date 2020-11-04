@@ -1,11 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { ZoomMtg } from '@zoomus/websdk';
 import { MeetingService } from '../core/services/meeting.service';
+import { ISignature, IMeeting, IMeetingInit, IMeetingConstants } from '../core/interfaces/signature';
+import { environment } from '../../environments/environment';
 
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
+// ZoomMtg.setZoomJSLib('http://localhost:4200/node_modules/@zoomus/websdk/dist/lib', '/av'); // LOCAL version
+// ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.1/lib', '/av'); // CDN version
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
@@ -18,25 +21,37 @@ export class MeetingComponent implements OnInit {
 
   form: FormGroup; // Reative Form name
   joinRole = '';
-
-  // interface for form
-  payload = {
-    meeting_id: 0,
-    meeting_pswd: '',
-    user_email: '',
-    username: '',
-    role: 0
-  };
+  payload: IMeeting;
+  meetingConstants: IMeetingConstants;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     @Inject(DOCUMENT) document,
     private meeting: MeetingService
   ) {}
 
   ngOnInit(): void {
+    this.getMeetingConstants(); // check for meeting constants from URL on pageLoad
     this.initForm(); // initialize reactive form on component init
+  }
+
+  // get meeting constant from URL
+  getMeetingConstants() {
+    this.route.queryParams.subscribe(
+      (params: Params) => {
+        if (params.apiKey !== undefined && params.apiSecret !== undefined) {
+          this.meetingConstants = {
+            apiKey: params.apiKey,
+            apiSecret: params.apiSecret
+          };
+        } else if (params.apiKey === undefined && params.apiSecret === undefined) {
+          console.log('params: ', params);
+        }
+        console.log('meetingConstans: ', this.meetingConstants);
+      }
+    );
   }
 
   // build form controls
@@ -56,18 +71,56 @@ export class MeetingComponent implements OnInit {
 
   // method when form is submitted
   onSubmit(formPayload) {
-    this.payload.meeting_id = Number(formPayload.meeting_id.value);
-    this.payload.meeting_pswd = formPayload.meeting_pswd.value;
-    this.payload.user_email = formPayload.user_email.value;
-    this.payload.username = formPayload.username.value;
-    this.payload.role = Number(formPayload.role.value);
-
-    // generate signature to start or join meeting
-    // it requires meeting_id and role of user
-    this.getUserSignature({meetingNumber: this.payload.meeting_id, role: this.payload.role});
+    this.payload = {
+                      meeting_id: Number(formPayload.meeting_id.value),
+                      meeting_pswd: formPayload.meeting_pswd.value,
+                      user_email: formPayload.user_email.value,
+                      username: formPayload.username.value,
+                      role: Number(formPayload.role.value)
+                   };
+    if (this.meetingConstants === undefined) {
+      // generate signature to start or join meeting via backend server
+      // it requires meeting_id and role of user
+      this.getUserSignature(
+        {meetingNumber: this.payload.meeting_id, role: this.payload.role}
+        );
+    } else if (this.meetingConstants !== undefined) {
+      if (this.meetingConstants.apiKey !== undefined && this.meetingConstants.apiSecret !== undefined) {
+        // generate signature to start or join meeting via queryParam
+        // it requires apiKey, apiSecret, meeting_id and role of user
+        this.generateSignature(
+          {
+            meetingNumber: this.payload.meeting_id,
+            apiKey: this.meetingConstants.apiKey,
+            apiSecret: this.meetingConstants.apiSecret,
+            role: this.payload.role
+          }
+        );
+      }
+    }
   }
 
-  // method to generate signature for meeting
+  // method to generate signature for meeting from queryParams
+  generateSignature(payload: ISignature) {
+    let generatedSignature = '';
+    ZoomMtg.generateSignature({
+      ...payload,
+      success: (success) => {
+        if (success.status === true && success.result !== '') {
+          generatedSignature = success.result;
+        }
+      }
+    });
+    const meetingPayload = {
+      leaveUrl: environment.leaveUrl,
+      apiKey: this.meetingConstants.apiKey,
+      signature: generatedSignature
+    };
+    this.startMeeting(meetingPayload, this.payload);
+  }
+
+
+  // method to generate signature for meeting via http request
   getUserSignature(payload){
     this.meeting.getSignature(payload).subscribe(
       data => {
@@ -84,7 +137,7 @@ export class MeetingComponent implements OnInit {
   }
 
   // method to generate start or join meeting
-  startMeeting(meetingPayload, UserPayload) {
+  startMeeting(meetingPayload: IMeetingInit, UserPayload: IMeeting) {
 
     document.getElementById('zmmtg-root').style.display = 'block';
 
@@ -93,7 +146,6 @@ export class MeetingComponent implements OnInit {
       isSupportAV: true,
       success: (success) => {
         console.log(success);
-
         ZoomMtg.join({
           signature: meetingPayload.signature,
           meetingNumber: UserPayload.meeting_id,
